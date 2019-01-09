@@ -7,31 +7,35 @@ use Illuminate\Support\Facades\Hash;
 use App\EmailVerification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendVerificationLink;
+use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
 class UserController extends Controller
 {
+
+    use AuthenticatesUsers;
+
     public function register()
     {
-        //dd(request());
-        $user = User::where('email', request()->email)->first();
-        if($user!=null) {
-            return view('register')->withErrors([
-                'login'=> 'User with this email already exist'
-            ]);
-        }
-        if(request()->password != request()->password_confirmation){
+        //Checking if two passwords match
+        /*if(request()->password != request()->password_confirmation){
             
             return view('register', ['prevData' => request()])->withErrors([
                 'login'=> 'Passwords doesnt match'
             ]);
-        }
+        }*/
+
+        //Validate register data
         $user = request()->validate([
-            'username' => 'required',
-            'email' => 'required',
-            'password' => 'required'
+            'username' => ['required', 'min:6'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:6', 'same:password_confirmation'],
+            'password_confirmation' => 'required'
         ]);
+
         $user['password'] = Hash::make(request()->password);
         $user = User::create($user);
         $ver = EmailVerification::create([
@@ -96,7 +100,35 @@ class UserController extends Controller
                 ]);
             }
         }
-        
-        dd(Auth::user());
+        Auth::login($user);
     }
+
+    public function requestPassChange()
+    {
+        $user = User::where('email', request()->email)->first();
+        if($user == null) {
+            return view('passReset')->withErrors([
+                'login'=> 'User does not exist'
+            ]);
+        }
+        $res = EmailVerification::create([
+            'user_id' => $user->id,
+            'link' => md5(uniqid($user->username, true))
+        ]);
+        Mail::to(request()->email)->send(
+            new ResetPassword($res->link)
+        );
+
+    }
+
+    public function logout()
+    {
+       Auth::logout();
+    }
+
+    public function showLoginForm()
+    {
+        return view('login');
+    }
+
 }
