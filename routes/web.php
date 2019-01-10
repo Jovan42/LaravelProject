@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\UserHelper;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,6 +24,8 @@ Route::get('/register', function () {
     return view('register');
 });
 Route::get('/login', function () {
+    $result = UserHelper::isLoggedin();
+        if ($result != null)     return $result;
     return view('login');
 });
 Route::get('/resetPass', function () {
@@ -38,4 +42,4 @@ Route::get('/resend/{email}', 'UserController@resend');
 
 Route::get('/home/', 'UserController@requestPassChange');
 
-Route::get('/logout/', 'UserController@resend');
+Route::get('/logout/', 'UserController@logout');

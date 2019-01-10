@@ -22,7 +22,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function verification()
+    public function verified()
     {
         return $this->hasOne(EmailVerification::class);
     }
