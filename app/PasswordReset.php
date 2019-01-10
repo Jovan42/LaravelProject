@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ResetPassword extends Model
+class PasswordReset extends Model
 {
     protected $fillable = [
         'user_id', 'link'
