@@ -12,7 +12,7 @@ use App\Helpers\UserHelper;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 //Login and
 Route::get('/', function () {
     return view('welcome');
@@ -49,14 +49,72 @@ Route::get('/resend/{email}', 'UserController@resend');
 Route::get('/home/', 'UserController@requestPassChange');
 
 Route::get('/logout/', 'UserController@logout');
+*/
+Route::group(['prefix' => 'api'], function() {
+    Route::group(['prefix' => 'auth'], function()
+    {
+        Route::post('/register', 'UserController@register');
+        Route::post('/login', 'UserController@login');
+        Route::post('/logout/', 'UserController@logout');
+        Route::get('/resendVerification/{email}', 'UserController@resend');
+        Route::post('/verify/{link}', 'UserController@verify');
+        Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
+        Route::post('/resetPass/', 'UserController@resetPassword');
 
-Route::group(['prefix' => 'auth'], function()
-{
-    Route::post('/register', 'UserController@register');
-    Route::post('/login', 'UserController@login');
-    Route::post('/logout/', 'UserController@logout');
-    Route::get('/resendVerification/{email}', 'UserController@resend');
-    Route::post('/verify/{link}', 'UserController@verify');
-    Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
-    Route::post('/resetPass/', 'UserController@resetPassword');
+    });
+
+    Route::group(['prefix' => 'user'], function()
+    {
+        Route::get('/{username}', 'UserController@getByUsername');
+        Route::delete('/{username}', 'UserController@delete');
+        Route::post('/', 'UserController@register');
+        Route::put('/', 'UserController@edit');
+        Route::post('/{username}/posts', 'PostController@getForUser');  
+        Route::group(['prefix' => '{username}/settings'], function()
+        {
+            Route::get('/', 'UserController@getSettings');
+
+        });
+
+    });
+
+    Route::group(['prefix' => 'post'], function()
+    {
+        Route::get('/{id}', 'PostController@getById');
+        Route::get('/', 'PostController@getAll');
+        Route::delete('/{id}', 'PostController@delete');
+        Route::post('/', 'PostController@add');
+        Route::put('/', 'PostController@edit');
+        Route::get('/{id}/comments', 'CommentController@getForPost');
+        Route::get('/{id}/tags', 'TagController@getForPost');
+        Route::get('/{id}/category', 'CategoryController@getForPost');
+    });
+
+    Route::group(['prefix' => 'tag'], function()
+    {
+        Route::get('/{id}', 'TagController@getById');
+        Route::delete('/{id}', 'TagController@delete');
+        Route::post('/', 'TagController@add');
+        Route::put('/', 'TagController@edit');
+        Route::get('/tag/posts', 'PostController@getWithTag');
+    });
+
+    Route::group(['prefix' => 'category'], function()
+    {
+        Route::get('/{id}', 'CategoryController@getById');
+        Route::delete('/{id}', 'CategoryController@delete');
+        Route::post('/', 'CategoryController@add');
+        Route::put('/', 'CategoryController@edit');
+        Route::get('/tag/posts', 'PostController@getWithCategory');
+    });
+
+    Route::group(['prefix' => 'comment'], function()
+    {
+        Route::get('/{id}', 'CommentController@getByUsername');
+        Route::delete('/{id}', 'CommentController@delete');
+        Route::post('/', 'CommentController@add');
+        Route::put('/', 'CommentController@edit');
+        Route::post('/{id}/like', 'CommentController@like');
+        Route::post('/{id}/dislike', 'CommentController@dislike');
+    });
 });
