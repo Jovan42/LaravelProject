@@ -49,3 +49,14 @@ Route::get('/resend/{email}', 'UserController@resend');
 Route::get('/home/', 'UserController@requestPassChange');
 
 Route::get('/logout/', 'UserController@logout');
+
+Route::group(['prefix' => 'auth'], function()
+{
+    Route::post('/register', 'UserController@register');
+    Route::post('/login', 'UserController@login');
+    Route::post('/logout/', 'UserController@logout');
+    Route::get('/resendVerification/{email}', 'UserController@resend');
+    Route::post('/verify/{link}', 'UserController@verify');
+    Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
+    Route::post('/resetPass/', 'UserController@resetPassword');
+});
