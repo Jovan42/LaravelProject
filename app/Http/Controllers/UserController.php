@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Helpers\UserHelper;
 use App\PasswordReset;
 use App\Mail\PasswordResetMail;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -85,4 +86,23 @@ class UserController extends Controller
     {
        Auth::logout();
     }
+
+    public function resetPassword()
+    {
+        $link = request()->link;
+        $pReset = PasswordReset::where('link', $link)->first();
+        $user = $pReset->user;
+        if($pReset == null)
+            abort(404);
+        $pass = request()->validate([
+            'password' => ['required', 'min:6', 'same:password_confirmation'],
+            'password_confirmation' => 'required'
+        ]);
+        $user['password'] = Hash::make(request()->password);
+        DB::transaction(function () use ($link, $user){ 
+            $user->update();
+            PasswordReset::where('link', $link)->delete();
+        });
+    }
+ 
 }

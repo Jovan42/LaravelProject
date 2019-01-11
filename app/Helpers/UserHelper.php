@@ -28,11 +28,12 @@ class UserHelper
 
     public static function sendPasswordResetMail($user)
     {
+        PasswordReset::where('user_id', $user->id)->delete();
         $res = PasswordReset::create([
             'user_id' => $user->id,
             'link' => md5(uniqid($user->username, true))
         ]);
-        PasswordReset::where('user_id', $user->id)->delete();
+        
         Mail::to(request()->email)->send(
             new PasswordResetMail($res->link)
         );
@@ -54,7 +55,7 @@ class UserHelper
     public static function doesExist($user, $redirect = 'errorPage')
     {
         if($user==null) {
-            return redirect($redirect)->withErrors([
+            return view($redirect)->withErrors([
                 'login'=> 'User does not exist'
             ]);
         }
@@ -88,5 +89,7 @@ class UserHelper
             return view('home');
         return null;
     }
+
+    
 
 }   

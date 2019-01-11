@@ -1,4 +1,4 @@
-<form method="POST" action="/resetPass">
+<form method="POST" action="/requestPasswordChange">
     @method('POST')
     @csrf
     <h2>Enter email of account</h2>

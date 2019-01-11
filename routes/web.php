@@ -13,32 +13,38 @@ use App\Helpers\UserHelper;
 |
 */
 
-
-//Login and 
+//Login and
 Route::get('/', function () {
     return view('welcome');
 });
 
 //Profile views
-Route::get('/register', function () {   
+Route::get('/register', function () {
     return view('register');
 });
 Route::get('/login', function () {
     $result = UserHelper::isLoggedin();
-        if ($result != null)     return $result;
+    if ($result != null) {
+        return $result;
+    }
     return view('login');
 });
-Route::get('/resetPass', function () {
-    return view('passReset');
+Route::get('/requestPasswordChange', function () {
+    return view('auth/request_password_change');
 });
 
-Route::post('/resetPass/', 'UserController@requestPassChange');
+Route::get('/resetPass/{link}', function () {
+    return view('auth/password_reset_form', ['link' => request()->link]);
+});
+
+Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
+Route::post('/resetPass/', 'UserController@resetPassword');
+
 
 Route::post('/register', 'UserController@register');
 Route::post('/login', 'UserController@login');
 Route::get('/verify/{link}', 'UserController@verify');
 Route::get('/resend/{email}', 'UserController@resend');
-
 
 Route::get('/home/', 'UserController@requestPassChange');
 
