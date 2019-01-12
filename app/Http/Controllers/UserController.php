@@ -1,108 +1,61 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
 
 use App\User;
-use App\EmailVerification;
-use App\Mail\ResetPassword;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\Helpers\UserHelper;
-use App\PasswordReset;
-use App\Mail\PasswordResetMail;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
-    use AuthenticatesUsers;
-
-    public function register()
+    public function getByUsername()
     {
-        $user = UserHelper::registerUser(request());
-        UserHelper::sendVerificationMail($user);
-        
-        return redirect('/home');
-    }
+        $user = User::where('username', request()->username)->first();
 
-    public function resend($mail) {
-        $user = User::where('email', request()->email)->first();
-        if ($user->verified == false) {
-            EmailVerification::where('user_id', $user->id)->delete();
-            UserHelper::sendVerificationMail($user);
+        //User not found or deleted    
+        if($user == null || $user->deleted) {
+            return response()->json([
+                'error' => 'User not found'
+            ], 404);
         }
+
+        if($user->settings != null && !$user->settings->show_mail)
+            $user->email = 'Hidden by users request';
+        return $user;
     }
 
-    public function verify($link)
+    public function delete()
     {
-        if ($user->verified == false) {
-            DB::transaction(function () use ($link) {
-                $ver = EmailVerification::get()->where('link', $link)->first();
-                $ver->user->verified = true;
+        $user = User::where('username', request()->username)->first();
 
-                $ver->user->update();
-
-                EmailVerification::where('link', $link)->delete();
-            });
+        //User not found or already deleted
+        if($user == null || $user->deleted) {
+            return response()->json([
+                'error' => 'User not found'
+            ], 404);
         }
+        if(Auth::check() == null) {
+            return response()->json([
+                'error' => 'Not authorised for this action'
+            ], 401);
+        }
+        $user->deleted = true;
+        $user->update();
     }
 
-    public function login()
-    {
-        $result = UserHelper::isLoggedin();
-        if ($result != null)     return $result;
-        
-        $user = User::where('email', request()->email)->first();
-
-        $result = UserHelper::doesExist($user, 'login');
-        if ($result != null)     return $result;
-
-
-        $result = UserHelper::isVerified($user);
-        if ($result != null)     return $result;
-
-        $cred = array(
-            'email' => request()->email,
-            'password' => request()->password
-        );
-        
-        $result = UserHelper::attemptLogin($cred);
-        if ($result != null)     return $result;
+    public function edit(User $user)
+    {   
+        $user = new User(request()->user);
+        $oldUserData = User::where('id', $user->id)->first();
+        $oldUserData->username = $user->username;
+        $oldUserData->email= $user->email;
+        $oldUserData->update();
     }
 
-    public function requestPassChange()
+    public function getSettings()
     {
         $user = User::where('email', request()->email)->first();
-
-        $result = UserHelper::doesExist($user, 'resetPass');
-        if ($result != null)     return $result;
-        UserHelper::sendPasswordResetMail($user);
-
+        return $user->settings();
     }
-
-    public function logout()
-    {
-       Auth::logout();
-    }
-
-    public function resetPassword()
-    {
-        $link = request()->link;
-        $pReset = PasswordReset::where('link', $link)->first();
-        $user = $pReset->user;
-        if($pReset == null)
-            abort(404);
-        $pass = request()->validate([
-            'password' => ['required', 'min:6', 'same:password_confirmation'],
-            'password_confirmation' => 'required'
-        ]);
-        $user['password'] = Hash::make(request()->password);
-        DB::transaction(function () use ($link, $user){ 
-            $user->update();
-            PasswordReset::where('link', $link)->delete();
-        });
-    }
- 
 }

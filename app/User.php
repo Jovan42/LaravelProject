@@ -15,11 +15,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password',
+        'id','username', 'email', 'password',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'settings', 'deleted'
     ];
 
     public function verified()
@@ -37,5 +37,9 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+    public function posts()
+    {
+        return $this->hasMany(Posts::class);
     }
 }

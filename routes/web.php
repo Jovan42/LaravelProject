@@ -12,7 +12,7 @@ use App\Helpers\UserHelper;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
+
 //Login and
 Route::get('/', function () {
     return view('welcome');
@@ -41,7 +41,7 @@ Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
 Route::post('/resetPass/', 'UserController@resetPassword');
 
 
-Route::post('/register', 'UserController@register');
+Route::post('/register', 'AuthController@register');
 Route::post('/login', 'UserController@login');
 Route::get('/verify/{link}', 'UserController@verify');
 Route::get('/resend/{email}', 'UserController@resend');
@@ -49,33 +49,32 @@ Route::get('/resend/{email}', 'UserController@resend');
 Route::get('/home/', 'UserController@requestPassChange');
 
 Route::get('/logout/', 'UserController@logout');
-*/
+
 Route::group(['prefix' => 'api'], function() {
     Route::group(['prefix' => 'auth'], function()
     {
-        Route::post('/register', 'UserController@register');
-        Route::post('/login', 'UserController@login');
-        Route::post('/logout/', 'UserController@logout');
-        Route::get('/resendVerification/{email}', 'UserController@resend');
-        Route::post('/verify/{link}', 'UserController@verify');
-        Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
-        Route::post('/resetPass/', 'UserController@resetPassword');
-
+        Route::post('/register', 'AuthController@register');
+        Route::post('/login', 'AuthController@login');
+        Route::post('/logout/', 'AuthController@logout');
+        Route::get('/resendVerification/{email}', 'AuthController@resend');
+        Route::post('/verify/{link}', 'AuthController@verify');
+        Route::post('/requestPasswordChange/', 'AuthController@requestPassChange');
+        Route::post('/resetPass/', 'AuthController@resetPassword');
     });
 
     Route::group(['prefix' => 'user'], function()
     {
         Route::get('/{username}', 'UserController@getByUsername');
         Route::delete('/{username}', 'UserController@delete');
-        Route::post('/', 'UserController@register');
+        Route::post('/', 'AuthController@register');
         Route::put('/', 'UserController@edit');
-        Route::post('/{username}/posts', 'PostController@getForUser');  
+        Route::get('/{username}/posts', 'PostController@getForUser');  
+
         Route::group(['prefix' => '{username}/settings'], function()
         {
             Route::get('/', 'UserController@getSettings');
 
         });
-
     });
 
     Route::group(['prefix' => 'post'], function()
@@ -110,7 +109,7 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::group(['prefix' => 'comment'], function()
     {
-        Route::get('/{id}', 'CommentController@getByUsername');
+        Route::get('/{id}', 'CommentController@getById');
         Route::delete('/{id}', 'CommentController@delete');
         Route::post('/', 'CommentController@add');
         Route::put('/', 'CommentController@edit');
