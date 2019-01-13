@@ -15,53 +15,41 @@ use App\PasswordReset;
 use App\Mail\PasswordResetMail;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Facades\Validator;
+
 class AuthController extends Controller
 {
     use AuthenticatesUsers;
     
     public function register()
     {
-        $user = UserHelper::registerUser(request());
-        UserHelper::sendVerificationMail($user);
-        
-        return redirect('/home');
-    }
-
-    public function resend($mail) {
-        $user = User::where('email', request()->email)->first();
-        if ($user->verified == false) {
-            EmailVerification::where('user_id', $user->id)->delete();
-            UserHelper::sendVerificationMail($user);
+        $validator = Validator::make(request()->all(), [
+            'username' => ['required', 'min:6', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:6', 'same:password_confirmation'],
+            'password_confirmation' => 'required'
+        ]);
+        if ($validator->fails()) {    
+            return response()->json($validator->errors()->messages(), 409);
         }
-    }
 
-    public function verify($link)
-    {
-        if ($user->verified == false) {
-            DB::transaction(function () use ($link) {
-                $ver = EmailVerification::get()->where('link', $link)->first();
-                $ver->user->verified = true;
-
-                $ver->user->update();
-
-                EmailVerification::where('link', $link)->delete();
-            });
-        }
+        $user = request()->all();
+        $user['password'] = Hash::make(request()->password);
+        $user = User::create($user);
+        UserHelper::sendVerificationMail($user);    
+        return response()->json("User registered", 200);
     }
 
     public function login()
-    {
-        $result = UserHelper::isLoggedin();
-        if ($result != null)     return $result;
-        
+    {        
         $user = User::where('email', request()->email)->first();
 
         $result = UserHelper::doesExist($user, 'login');
-        if ($result != null)     return $result;
+        if ($result != null)     return response()->json("User does not exist", 404);
 
 
         $result = UserHelper::isVerified($user);
-        if ($result != null)     return $result;
+        if ($result != null)    return response()->json("User is not verified", 403);
 
         $cred = array(
             'email' => request()->email,
@@ -69,7 +57,36 @@ class AuthController extends Controller
         );
         
         $result = UserHelper::attemptLogin($cred);
-        if ($result != null)     return $result;
+        if ($result != null)     return response()->json("Email and password does not match", 401);
+
+        return response()->json("Successful login", 200);
+    }
+
+    public function logout()
+    {
+       Auth::logout();
+       return response()->json("Successful logout", 200);
+    }
+
+    public function resend($mail) {
+        $user = User::where('email', request()->email)->first();
+        if ($user->verified == false) {
+            EmailVerification::where('user_id', $user->id)->delete();
+            UserHelper::sendVerificationMail($user);
+            return response()->json("Mail succesfully send", 200);
+        }
+        return response()->json("Verification link does not exist", 404);
+    }
+
+    public function verify($link)
+    {   
+
+        $ver = EmailVerification::get()->where('link', $link)->first();
+        if($ver == null)     return response()->json("Verification link does not exist", 404);
+
+        $ver->user->verified = true;
+        $ver->user->update();
+        EmailVerification::where('link', $link)->delete();
     }
 
     public function requestPassChange()
@@ -77,14 +94,9 @@ class AuthController extends Controller
         $user = User::where('email', request()->email)->first();
 
         $result = UserHelper::doesExist($user, 'resetPass');
-        if ($result != null)     return $result;
+        if ($result != null)     return response()->json("User does not exist", 404);
         UserHelper::sendPasswordResetMail($user);
-
-    }
-
-    public function logout()
-    {
-       Auth::logout();
+        return response()->json("Succesful request", 200);
     }
 
     public function resetPassword()
@@ -92,13 +104,18 @@ class AuthController extends Controller
         $link = request()->link;
         $pReset = PasswordReset::where('link', $link)->first();
         $user = $pReset->user;
-        if($pReset == null)
-            abort(404);
-        $pass = request()->validate([
+        if($pReset == null) return response()->json(" Password change link does not exist", 200);
+
+        
+        $validator = Validator::make(request()->all(), [
             'password' => ['required', 'min:6', 'same:password_confirmation'],
             'password_confirmation' => 'required'
         ]);
+        if ($validator->fails()) {    
+            return response()->json($validator->errors()->messages(), 409);
+        }
         $user['password'] = Hash::make(request()->password);
+        
         DB::transaction(function () use ($link, $user){ 
             $user->update();
             PasswordReset::where('link', $link)->delete();

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Mail\ResetPassword;
 use App\PasswordReset;
 use App\Mail\PasswordResetMail;
+use Illuminate\Support\Facades\Validator;
 
 class UserHelper
 {
@@ -41,12 +42,15 @@ class UserHelper
 
     public static function registerUser($request)
     {
+
+
         $user = $request->validate([
             'username' => ['required', 'min:6'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:6', 'same:password_confirmation'],
             'password_confirmation' => 'required'
         ]);
+        
 
         $user['password'] = Hash::make(request()->password);
         return User::create($user);

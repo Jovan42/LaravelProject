@@ -57,9 +57,9 @@ Route::group(['prefix' => 'api'], function() {
         Route::post('/login', 'AuthController@login');
         Route::post('/logout/', 'AuthController@logout');
         Route::get('/resendVerification/{email}', 'AuthController@resend');
-        Route::post('/verify/{link}', 'AuthController@verify');
-        Route::post('/requestPasswordChange/', 'AuthController@requestPassChange');
-        Route::post('/resetPass/', 'AuthController@resetPassword');
+        Route::get('/verify/{link}', 'AuthController@verify');
+        Route::get('/requestPasswordChange/{email}', 'AuthController@requestPassChange');
+        Route::post('/resetPass/{link}', 'AuthController@resetPassword');
     });
 
     Route::group(['prefix' => 'user'], function()

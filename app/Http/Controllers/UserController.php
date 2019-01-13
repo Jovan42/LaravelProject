@@ -15,14 +15,12 @@ class UserController extends Controller
 
         //User not found or deleted    
         if($user == null || $user->deleted) {
-            return response()->json([
-                'error' => 'User not found'
-            ], 404);
+            return response()->json("User does not exist", 404);
         }
 
         if($user->settings != null && !$user->settings->show_mail)
             $user->email = 'Hidden by users request';
-        return $user;
+        return response()->json($user, 200);
     }
 
     public function delete()
@@ -31,26 +29,19 @@ class UserController extends Controller
 
         //User not found or already deleted
         if($user == null || $user->deleted) {
-            return response()->json([
-                'error' => 'User not found'
-            ], 404);
+            return response()->json("User does not exist", 404);
         }
-        if(Auth::check() == null) {
-            return response()->json([
-                'error' => 'Not authorised for this action'
-            ], 401);
+        if(Auth::check() == null && Auth::user()->id != $user->id) {
+            return response()->json("Unauthorized to delete this user", 401);
         }
         $user->deleted = true;
         $user->update();
+        return response()->json("Successfully deleted", 200);
     }
 
     public function edit(User $user)
     {   
-        $user = new User(request()->user);
-        $oldUserData = User::where('id', $user->id)->first();
-        $oldUserData->username = $user->username;
-        $oldUserData->email= $user->email;
-        $oldUserData->update();
+        return response()->json("Unable to edit user", 404);
     }
 
     public function getSettings()
