@@ -46,6 +46,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        //dd($exception);
+
+        switch ($exception->getMessage()) {
+            case 'No query results for model [App\Post].':
+                return response()->json('Post not found', 404);
+                break;
+            case 'No query results for model [App\Category].':
+                return response()->json('Category not found', 404);
+                break;
+            case 'No query results for model [App\Tag].':
+                return response()->json('Tag not found', 404);
+                break;
+            default:
+            return parent::render($request, $exception);
+                break;
+        }
         return parent::render($request, $exception);
     }
 }

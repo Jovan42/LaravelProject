@@ -18,6 +18,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->unsignedInteger('category_id');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
     }

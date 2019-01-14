@@ -83,7 +83,7 @@ Route::group(['prefix' => 'api'], function() {
         Route::get('/', 'PostController@getAll');
         Route::delete('/{id}', 'PostController@delete');
         Route::post('/', 'PostController@add');
-        Route::put('/', 'PostController@edit');
+        Route::put('/{id}', 'PostController@edit');
         Route::get('/{id}/comments', 'CommentController@getForPost');
         Route::get('/{id}/tags', 'TagController@getForPost');
         Route::get('/{id}/category', 'CategoryController@getForPost');
@@ -95,7 +95,7 @@ Route::group(['prefix' => 'api'], function() {
         Route::delete('/{id}', 'TagController@delete');
         Route::post('/', 'TagController@add');
         Route::put('/', 'TagController@edit');
-        Route::get('/tag/posts', 'PostController@getWithTag');
+        Route::get('/{id}/posts', 'PostController@getWithTag');
     });
 
     Route::group(['prefix' => 'category'], function()
@@ -103,8 +103,8 @@ Route::group(['prefix' => 'api'], function() {
         Route::get('/{id}', 'CategoryController@getById');
         Route::delete('/{id}', 'CategoryController@delete');
         Route::post('/', 'CategoryController@add');
-        Route::put('/', 'CategoryController@edit');
-        Route::get('/tag/posts', 'PostController@getWithCategory');
+        Route::put('/c', 'CategoryController@edit');
+        Route::get('/{id}/posts', 'PostController@getWithCategory');
     });
 
     Route::group(['prefix' => 'comment'], function()
