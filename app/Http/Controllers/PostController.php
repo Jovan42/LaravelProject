@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Category;
 use App\Tag;
+use App\PostsTags;
 
 class PostController extends Controller
 {
@@ -20,6 +21,7 @@ class PostController extends Controller
         $posts = $user->posts::where('deleted', false);
         foreach ($posts as  $post) {
             $post->category;
+            $post->tags;
         }
 
         return response()->json($posts, 200);
@@ -28,6 +30,8 @@ class PostController extends Controller
     public function getById(Post $id = Post) 
     {
         $id->category;
+        $id->tags;
+
         return response()->json($id, 200);
     }
 
@@ -36,6 +40,7 @@ class PostController extends Controller
         $posts = Post::all()->where('deleted', 0);
         foreach ($posts as  $post) {
             $post->category;
+            $post->tags;
         }
 
         return response()->json($posts, 200);
@@ -95,8 +100,23 @@ class PostController extends Controller
 
     public function getWithTag(Tag $id)
     {
-        dd('s');
         return response()->json($id->posts, 200);
       
+    }
+
+    public function addTag(Post $id) {
+        $tagId =  request()->tagId;
+        
+        $pt = [
+            'post_id' => $id->id,
+            'tag_id' => $tagId    
+        ];
+        PostsTags::create($pt);
+    }
+
+    public function removeTag(Post $id)
+    {
+        $tagId =  request()->tagId;
+        $pt = PostsTags::where('post_id', $id->id)->where('tag_id', $tagId)->delete();
     }
 }

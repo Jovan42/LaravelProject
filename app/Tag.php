@@ -6,8 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
+    protected $fillable = [
+       'name'
+    ];
+
+    protected $hidden = ['pivot', 'deleted'];
+
     public function posts()
     {
-        return $this->belongsToMany(Post::class, 'post_tags');
+        return $this->belongsToMany(Post::class, 'posts_tags');
     }
 }

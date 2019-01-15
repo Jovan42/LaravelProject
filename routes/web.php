@@ -87,15 +87,22 @@ Route::group(['prefix' => 'api'], function() {
         Route::get('/{id}/comments', 'CommentController@getForPost');
         Route::get('/{id}/tags', 'TagController@getForPost');
         Route::get('/{id}/category', 'CategoryController@getForPost');
+        Route::post('/{id}/tags', 'PostController@addTag');
+        Route::delete('/{id}/tags', 'PostController@removeTag');
+
+
     });
 
     Route::group(['prefix' => 'tag'], function()
     {
+        Route::get('/', 'TagController@getAll');
         Route::get('/{id}', 'TagController@getById');
         Route::delete('/{id}', 'TagController@delete');
         Route::post('/', 'TagController@add');
-        Route::put('/', 'TagController@edit');
+        Route::put('/{id}', 'TagController@edit');
         Route::get('/{id}/posts', 'PostController@getWithTag');
+
+        
     });
 
     Route::group(['prefix' => 'category'], function()
