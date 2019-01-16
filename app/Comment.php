@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    protected $fillable = [
+        'text', 'user_id', 'post_id '
+    ];
+    protected $hidden = [
+        'rates'
+    ];
     public function user()
     {
         return $this->belongsto(User::class);
@@ -24,6 +30,6 @@ class Comment extends Model
     }
     public function rates()
     {
-        return $this->hasMany(Rates::class);
+        return $this->hasMany(CommentRate::class);
     }
 }

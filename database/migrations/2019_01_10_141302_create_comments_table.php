@@ -19,6 +19,8 @@ class CreateCommentsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('post_id');
             $table->unsignedInteger('comment_id')->nullable();
+            $table->boolean('deleted')->default(false);
+
             $table->timestamps();
         });
     }

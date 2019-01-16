@@ -9,9 +9,9 @@ use App\User;
 
 class UserController extends Controller
 {
-    public function getByUsername()
+    public function getByUsername($username)
     {
-        $user = User::where('username', request()->username)->first();
+        $user = User::where('username', $username)->first();
 
         //User not found or deleted    
         if($user == null || $user->deleted) {
@@ -31,7 +31,8 @@ class UserController extends Controller
         if($user == null || $user->deleted) {
             return response()->json("User does not exist", 404);
         }
-        if(Auth::check() == null && Auth::user()->id != $user->id) {
+
+        if(Auth::check() == null || Auth::user()->id != $user->id) {
             return response()->json("Unauthorized to delete this user", 401);
         }
         $user->deleted = true;
@@ -44,9 +45,15 @@ class UserController extends Controller
         return response()->json("Unable to edit user", 404);
     }
 
-    public function getSettings()
+    public function getSettings( $username)
     {
-        $user = User::where('email', request()->email)->first();
-        return $user->settings();
+        $user = User::where('username', $username)->first();
+        if($user == null || $user->deleted) {
+            return response()->json("User does not exist", 404);
+        }
+        return $user->settings;
     }
+    
+
+
 }

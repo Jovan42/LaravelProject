@@ -13,7 +13,7 @@ use App\PostsTags;
 
 class PostController extends Controller
 {
-    public function getForUser()
+    /*public function getForUser()
     {
         $user = User::where('email', request()->email)->first();
         if($user == null)   return response()->json("User does not exist", 404);
@@ -25,7 +25,7 @@ class PostController extends Controller
         }
 
         return response()->json($posts, 200);
-    }
+    }*/
 
     public function getById(Post $id = Post) 
     {
@@ -119,4 +119,6 @@ class PostController extends Controller
         $tagId =  request()->tagId;
         $pt = PostsTags::where('post_id', $id->id)->where('tag_id', $tagId)->delete();
     }
+
+   
 }

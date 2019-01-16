@@ -58,6 +58,9 @@ class Handler extends ExceptionHandler
             case 'No query results for model [App\Tag].':
                 return response()->json('Tag not found', 404);
                 break;
+                case 'No query results for model [App\Comment].':
+                    return response()->json('Comment not found', 404);
+                    break;
             default:
             return parent::render($request, $exception);
                 break;

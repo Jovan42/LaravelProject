@@ -89,8 +89,23 @@ Route::group(['prefix' => 'api'], function() {
         Route::get('/{id}/category', 'CategoryController@getForPost');
         Route::post('/{id}/tags', 'PostController@addTag');
         Route::delete('/{id}/tags', 'PostController@removeTag');
+        
+        Route::group(['prefix' => '{post}/comment'], function()
+        {
+           
+            Route::post('/', 'CommentController@add');
+           
+            Route::post('/{id}/like', 'CommentController@like');
+            Route::post('/{id}/dislike', 'CommentController@dislike');
+        });
 
+    });
 
+    Route::group(['prefix' => '/comment'], function()
+    {
+        Route::get('/{id}', 'CommentController@getById');
+        Route::delete('/{id}', 'CommentController@delete');
+        Route::put('/{id}', 'CommentController@edit');
     });
 
     Route::group(['prefix' => 'tag'], function()
@@ -107,20 +122,13 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::group(['prefix' => 'category'], function()
     {
+        Route::get('/', 'CategoryController@getAll');
         Route::get('/{id}', 'CategoryController@getById');
         Route::delete('/{id}', 'CategoryController@delete');
         Route::post('/', 'CategoryController@add');
-        Route::put('/c', 'CategoryController@edit');
+        Route::put('/{id}', 'CategoryController@edit');
         Route::get('/{id}/posts', 'PostController@getWithCategory');
     });
 
-    Route::group(['prefix' => 'comment'], function()
-    {
-        Route::get('/{id}', 'CommentController@getById');
-        Route::delete('/{id}', 'CommentController@delete');
-        Route::post('/', 'CommentController@add');
-        Route::put('/', 'CommentController@edit');
-        Route::post('/{id}/like', 'CommentController@like');
-        Route::post('/{id}/dislike', 'CommentController@dislike');
-    });
+    
 });

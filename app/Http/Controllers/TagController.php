@@ -31,12 +31,11 @@ class TagController extends Controller
         /*if (Auth::check() == null) {
             return response()->json('Unauthorized to delete this tag', 401);
         }*/
-        $id->deleted = true;
-        $id->update();
+        $id->delete();
         return response()->json('Successfully deleted', 200);
     }
 
-    public function add()
+    public function add(Post $post)
     {
         // TODO: uncomment
         //if(!Auth::check())    return response()->json("Unauthorized to add post", 401);
@@ -47,7 +46,7 @@ class TagController extends Controller
             return response()->json($validator->errors()->messages(), 409);
         }
         $tag = request()->all();
-
+        $tag->psot_id = $post->id;
         $tag = Tag::create($tag);
         return response()->json($tag, 200);
     }
@@ -65,5 +64,9 @@ class TagController extends Controller
         $id->name = request()->name;
         $id->update();
         return response()->json($id, 200);
+    }
+    public function getForPost(Post $id)
+    {
+        return response()->json($id->tags, 200);
     }
 }
