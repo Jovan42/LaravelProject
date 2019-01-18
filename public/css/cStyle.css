@@ -1,0 +1,65 @@
+.c-bg-primary {
+    background-color: #3F3E40;
+}
+
+.c-bg-nav {
+    background-color: #3F3E40;
+}
+
+.c-bg-sec {
+    color:  #984b43 !important; 
+    border-color: #984b43
+}
+
+.card {display:inline-block;
+   
+}
+
+
+
+.text-p {
+    color: #3F3E40;
+}
+.card:hover {
+    color: #ffffff!important; 
+    border-color: #ffffff!important;
+    background-color: #3F3E40;
+    cursor: pointer;
+}
+
+.card:hover div p{
+    color: #ffc107!important; 
+    border-color: #ffc107!important;
+    background-color: #3F3E40;
+}
+
+.card:hover h5{
+    color: #ffc107!important; 
+    border-color: #ffc107!important;
+    background-color: #3F3E40;
+}
+body {
+    background-color: #DCDCDC;
+}
+
+.container {
+    margin-top: 3%;
+}
+
+
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #888; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #3F3E40; 
+  }
+  
+  

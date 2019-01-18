@@ -1,0 +1,83 @@
+.c-bg-primary {
+    background-color: #282626;
+    color: #ffc107!important; 
+}
+
+.c-bg-nav {
+    background-color: #3F3E40;
+}
+
+.c-bg-sec {
+    color:  #984b43 !important; 
+    border-color: #984b43
+}
+
+.card {display:inline-block;
+    color: #ffc107;
+    background: #3F3E40;
+}
+
+.card div p{
+    color: #ffc107!important; 
+    border-color: #ffc107!important;
+    background-color: #3F3E40;
+}
+
+.card h5{
+    color: #888!important; 
+    border-color: #ffc107!important;
+    background-color: #3F3E40;
+}
+
+.text-p {
+    color: #3F3E40;
+}
+.card:hover {
+    color: #ffffff!important; 
+    border-color: #000!important;
+    background-color: #000;
+    cursor: pointer;
+}
+
+.card:hover div p{
+    color: #ffffff!important; 
+    border-color: #ffc107!important;
+    background-color: #000;
+}
+
+.card:hover h5{
+    color: #ffffff!important; 
+    border-color: #ffc107!important;
+    background-color: #000;
+}
+body {
+    color: #888!important; 
+    background-color:#282626;
+}
+
+.container {
+    margin-top: 3%;
+}
+h1 {
+    color: #888!important; 
+}
+
+.dropdown-menu {
+    background-color: #888;
+}
+
+
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #888; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #3F3E40; 
+  }

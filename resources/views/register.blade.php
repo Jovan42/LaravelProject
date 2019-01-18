@@ -1,13 +1,37 @@
-<form method="POST" action="/register">
-    @method('POST')
-    @csrf
-    <h2>Register acccount</h2>
-   
-    <p><input type="text" placeholder="Name" name="username"></p>
-    <p><input type="email" placeholder="eMail" name="email"></p>
-    <p><input type="password" placeholder="Password" name="password"></p>
-    <p><input type="password" placeholder="Password confirmation" name="password_confirmation"></p>
-   
-    <p><input type="submit" value="Register"></p>
-    @include('errors')
-</form>  
+<div class="container" >
+    <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Password">
+      </div>
+      <button class="btn btn-default btn-outline-primary" onclick="login(event)">Login</button>
+      <button type="button" class="btn btn-outline-secondary"onclick="showReg(event)">Register form</button>
+    </form>
+     </div>
+
+
+     <div class="container c-bg-primary" style="display: none;" id="reg">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="regEmail" placeholder="Email">
+          </div>
+          <div class="form-group">
+                <label for="exampleInputEmail1">Username</label>
+                <input type="username" class="form-control" id="regUsername" placeholder="Username">
+              </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="regPassword" placeholder="Password">
+          </div>
+          <div class="form-group">
+                <label for="exampleInputPassword1">Password Confirmation</label>
+                <input type="password" class="form-control" id="regPassword_confirmation" placeholder="Password Confirmation">
+              </div>
+          <button class="btn  btn-outline-primary c-bg-sec" onclick="register(event)">Register</button>
+        </form>
+         </div>

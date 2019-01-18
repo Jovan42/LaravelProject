@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\UserHelper;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,32 +13,19 @@ use App\Helpers\UserHelper;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/login', 'WebController@login');
+Route::get('/register', 'WebController@register');
+Route::get('/post/{id}', 'WebController@post');
+Route::get('/home', 'WebController@login');
+Route::get('/add_post', 'WebController@addPost');
+Route::get('/reset_password', 'WebController@passwordReset');
 
-//Login and
-Route::get('/', function () {
-    return view('welcome');
-});
 
-//Profile views
-Route::get('/register', function () {
-    return view('register');
-});
-Route::get('/login', function () {
-    $result = UserHelper::isLoggedin();
-    if ($result != null) {
-        return $result;
-    }
-    return view('login');
-});
-Route::get('/requestPasswordChange', function () {
-    return view('auth/request_password_change');
-});
 
 Route::get('/resetPass/{link}', function () {
     return view('auth/password_reset_form', ['link' => request()->link]);
 });
 
-Route::post('/requestPasswordChange/', 'UserController@requestPassChange');
 Route::post('/resetPass/', 'UserController@resetPassword');
 
 
@@ -46,19 +34,20 @@ Route::post('/login', 'UserController@login');
 Route::get('/verify/{link}', 'UserController@verify');
 Route::get('/resend/{email}', 'UserController@resend');
 
-Route::get('/home/', 'UserController@requestPassChange');
 
 Route::get('/logout/', 'UserController@logout');
 
-Route::group(['prefix' => 'api'], function() {
+Route::group(['prefix' => 'api', 'middleware' => 'cors'], function() {
     Route::group(['prefix' => 'auth'], function()
     {
+        Route::get('/check/', 'AuthController@check');
+
         Route::post('/register', 'AuthController@register');
         Route::post('/login', 'AuthController@login');
-        Route::post('/logout/', 'AuthController@logout');
+        Route::post('/logout', 'AuthController@logout');
         Route::get('/resendVerification/{email}', 'AuthController@resend');
         Route::get('/verify/{link}', 'AuthController@verify');
-        Route::get('/requestPasswordChange/{email}', 'AuthController@requestPassChange');
+        Route::post('/requestPasswordChange/', 'AuthController@requestPassChange');
         Route::post('/resetPass/{link}', 'AuthController@resetPassword');
     });
 

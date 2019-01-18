@@ -1,1 +1,1 @@
-Go to link to verify mail: <a href="http://localhost:8000/verify/{{ $link }}">http://localhost:8000/verify/{{ $link }}</a>
+Go to link to verify mail: <a href="http://localhost:8000/api/auth/verify/{{ $link }}">http://localhost:8000/api/auth/verify/{{ $link }}</a>

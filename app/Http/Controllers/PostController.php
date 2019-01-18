@@ -38,12 +38,14 @@ class PostController extends Controller
     public function getAll() 
     {
         $posts = Post::all()->where('deleted', 0);
+      
+        $postArray = array();
         foreach ($posts as  $post) {
             $post->category;
             $post->tags;
+           
         }
-
-        return response()->json($posts, 200);
+        return $posts;
     }
 
     public function delete(Post $id = Post)

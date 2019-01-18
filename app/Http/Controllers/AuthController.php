@@ -16,6 +16,7 @@ use App\Mail\PasswordResetMail;
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -23,6 +24,7 @@ class AuthController extends Controller
     
     public function register()
     {
+       
         $validator = Validator::make(request()->all(), [
             'username' => ['required', 'min:6', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
@@ -41,7 +43,10 @@ class AuthController extends Controller
     }
 
     public function login()
-    {        
+    {   
+        if(Auth::check()) {
+           return response()->json("Already logged in", 400);
+        }        
         $user = User::where('email', request()->email)->first();
 
         $result = UserHelper::doesExist($user, 'login');
@@ -58,7 +63,7 @@ class AuthController extends Controller
         
         $result = UserHelper::attemptLogin($cred);
         if ($result != null)     return response()->json("Email and password does not match", 401);
-
+        Session::save();
         return response()->json("Successful login", 200);
     }
 
@@ -91,10 +96,10 @@ class AuthController extends Controller
 
     public function requestPassChange()
     {
+        if(request()->email == null)    return response()->json("User does not exist", 404);
         $user = User::where('email', request()->email)->first();
 
-        $result = UserHelper::doesExist($user, 'resetPass');
-        if ($result != null)     return response()->json("User does not exist", 404);
+        if ($user == null)     return response()->json("User does not exist", 404);
         UserHelper::sendPasswordResetMail($user);
         return response()->json("Succesful request", 200);
     }
@@ -120,5 +125,12 @@ class AuthController extends Controller
             $user->update();
             PasswordReset::where('link', $link)->delete();
         });
+    }
+
+    public function check()
+    {
+        if(Auth::user() != null)
+            return Auth::user();
+            return response()->json("Noone is logged in", 403);
     }
 }
