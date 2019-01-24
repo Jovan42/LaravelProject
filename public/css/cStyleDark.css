@@ -59,13 +59,16 @@ body {
     margin-top: 3%;
 }
 h1 {
-    color: #888!important; 
+    color: #888; 
 }
 
 .dropdown-menu {
     background-color: #888;
 }
 
+.container h1 {
+    color: #ffc107;
+}
 
 
 ::-webkit-scrollbar {

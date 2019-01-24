@@ -5,17 +5,27 @@ $( document ).ready(function() {
     console.log(link)
     $.get(link)
     .done(function(data){
-        console.log(data['title']);
-       
+        console.log(data);
         $('#title').html(data['title']);
         $('#body').html(bbToHTML(data['body']));
-       
+        tags = $('#tags');
+        $.each(data['tags'], function(i, item) {
+
+            tag = ' <button style="font-size: 0.8em; padding: 0.3em;" type="button" onclick="goToTag({tagId})" class="btn btn-outline-info">{Name}</button>';
+            tag = tag.replace('{Name}', item['name']).replace('{tagId}', item['id']);
+            tags.append(tag);
+        });
 
     })
     .fail(function(xhr, status, error) {   
     });
    
 });
+
+function goToTag(tagId){
+    window.location.href = '/tag/' + tagId;
+    event.preventDefault();
+}
 
 
 function bbToHTML(bb) {

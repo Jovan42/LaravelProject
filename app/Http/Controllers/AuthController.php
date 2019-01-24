@@ -108,9 +108,9 @@ class AuthController extends Controller
     {
         $link = request()->link;
         $pReset = PasswordReset::where('link', $link)->first();
+       
+        if($pReset == null) return response()->json(" Password change link does not exist", 404);
         $user = $pReset->user;
-        if($pReset == null) return response()->json(" Password change link does not exist", 200);
-
         
         $validator = Validator::make(request()->all(), [
             'password' => ['required', 'min:6', 'same:password_confirmation'],

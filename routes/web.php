@@ -18,7 +18,10 @@ Route::get('/register', 'WebController@register');
 Route::get('/post/{id}', 'WebController@post');
 Route::get('/home', 'WebController@login');
 Route::get('/add_post', 'WebController@addPost');
-Route::get('/reset_password', 'WebController@passwordReset');
+Route::get('/request_password_reset', 'WebController@passwordResetRequest');
+Route::get('/reset_password/{link}  ', 'WebController@passwordReset');
+Route::get('/tag/{id}  ', 'WebController@tag');
+
 
 
 

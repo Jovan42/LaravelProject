@@ -69,8 +69,13 @@ function errorFade(event){
 }
 
 function forgotPass(event){
-    window.location.href = '/reset_password';
+    window.location.href = '/request_password_reset';
     event.preventDefault();
 }
 
+
+function showReg(event){
+    window.location.href = '/register';
+    event.preventDefault();
+}
 

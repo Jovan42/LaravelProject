@@ -15,8 +15,6 @@
    
 }
 
-
-
 .text-p {
     color: #3F3E40;
 }
@@ -45,7 +43,9 @@ body {
 .container {
     margin-top: 3%;
 }
-
+.container h1 {
+    color: #3F3E40; 
+}
 
 
 ::-webkit-scrollbar {

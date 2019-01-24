@@ -1,6 +1,6 @@
 <html>
   @include('template.head') 
-
+  <script src="../js/login.js"></script>
   </head>
    <body>
   @include('template.nav')
