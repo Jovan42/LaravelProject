@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->boolean('deleted')->default(false);
+            $table->string('color');
             $table->timestamps();
         });
     }

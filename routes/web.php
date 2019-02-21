@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\UserHelper;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -13,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::view('/{path?}', 'app');
+/*
 Route::get('/login', 'WebController@login');
 Route::get('/register', 'WebController@register');
 Route::get('/post/{id}', 'WebController@post');
@@ -60,7 +61,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function() {
         Route::delete('/{username}', 'UserController@delete');
         Route::post('/', 'AuthController@register');
         Route::put('/', 'UserController@edit');
-        Route::get('/{username}/posts', 'PostController@getForUser');  
+        Route::get('/{username}/posts', 'PostController@getForUser');
 
         Route::group(['prefix' => '{username}/settings'], function()
         {
@@ -81,12 +82,12 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function() {
         Route::get('/{id}/category', 'CategoryController@getForPost');
         Route::post('/{id}/tags', 'PostController@addTag');
         Route::delete('/{id}/tags', 'PostController@removeTag');
-        
+
         Route::group(['prefix' => '{post}/comment'], function()
         {
-           
+
             Route::post('/', 'CommentController@add');
-           
+
             Route::post('/{id}/like', 'CommentController@like');
             Route::post('/{id}/dislike', 'CommentController@dislike');
         });
@@ -109,7 +110,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function() {
         Route::put('/{id}', 'TagController@edit');
         Route::get('/{id}/posts', 'PostController@getWithTag');
 
-        
+
     });
 
     Route::group(['prefix' => 'category'], function()
@@ -122,5 +123,5 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function() {
         Route::get('/{id}/posts', 'PostController@getWithCategory');
     });
 
-    
-});
+
+});*/
